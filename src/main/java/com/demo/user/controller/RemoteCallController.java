@@ -18,10 +18,10 @@ public class RemoteCallController {
         this.remote = remote;
     }
 
-    @GetMapping("/orders")
+    //@GetMapping("/orders")
     //public List<OrderDto> getAllOrders() {
-        return remote.getAllOrders();
-    }
+        //return remote.getAllOrders();
+    //}
 
     @GetMapping("/orders/{id}")
     public OrderDto getOrderById(@PathVariable Long id) {
