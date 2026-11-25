@@ -21,7 +21,7 @@ public class UserService {
         return repository.findAll();
     }
 
-    // public Optional<UserDto> getById(Long id) {
-         return repository.findById(id);
-    // }
+    public Optional<UserDto> getById(Long id) {
+        return repository.findById(id);
+    }
 }
