@@ -19,7 +19,7 @@ public class RemoteCallController {
     }
 
     @GetMapping("/orders")
-    public List<OrderDto> getAllOrders() {
+    //public List<OrderDto> getAllOrders() {
         return remote.getAllOrders();
     }
 
