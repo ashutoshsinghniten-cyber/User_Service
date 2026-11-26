@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-// Endpoints that call the other two services (through RemoteCallService)
 @RestController
 @RequestMapping("/call")
 public class RemoteCallController {
@@ -19,10 +18,10 @@ public class RemoteCallController {
         this.remote = remote;
     }
 
-    @GetMapping("/orders")
-    public List<OrderDto> getAllOrders() {
-        return remote.getAllOrders();
-    }
+    //@GetMapping("/orders")
+    //public List<OrderDto> getAllOrders() {
+        //return remote.getAllOrders();
+    //}
 
     @GetMapping("/orders/{id}")
     public OrderDto getOrderById(@PathVariable Long id) {

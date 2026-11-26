@@ -16,9 +16,14 @@ import org.springframework.web.client.RestClientResponseException;
 import java.net.SocketTimeoutException;
 import java.util.Map;
 
+<<<<<<< HEAD
 // Turns failed calls to the other services into clear responses.
 // Full details go to the log; the client gets a short reason without internal URLs or bodies.
 @RestControllerAdvice
+=======
+@RestControllerAdvice
+   
+>>>>>>> b47b55c7c7f4a49c061c6e911bf5dcb3aa94c98a
 public class DownstreamExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(DownstreamExceptionHandler.class);
