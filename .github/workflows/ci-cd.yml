@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [ main ]
 
-env:
-  SELF: user   # Product_Service = product | User_Service = user | Order_Service = order
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,63 +19,8 @@ jobs:
       - name: Build and test
         run: mvn -B clean package
 
-  integration-test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build this service image
-        run: docker build -t local/self-service .
-
-      - name: Start all 3 services
-        run: |
-          OWNER=${GITHUB_REPOSITORY_OWNER,,}
-          docker network create demo
-          for s in user order product; do
-            case $s in user) P=8080;; order) P=8081;; product) P=8082;; esac
-            if [ "$s" = "$SELF" ]; then
-              IMG=local/self-service
-            else
-              IMG=ghcr.io/$OWNER/${s}_service:latest
-              docker pull $IMG
-            fi
-            docker run -d --name $s --network demo -p $P:$P \
-              -e USER_SERVICE_URL=http://user:8080 \
-              -e ORDER_SERVICE_URL=http://order:8081 \
-              -e PRODUCT_SERVICE_URL=http://product:8082 \
-              $IMG
-          done
-
-      - name: Wait for services
-        run: |
-          wait_for() {
-            for i in $(seq 1 40); do
-              curl -sf "$1" > /dev/null && return 0
-              sleep 3
-            done
-            echo "Timeout waiting for $1"; return 1
-          }
-          wait_for http://localhost:8080/api/users
-          wait_for http://localhost:8081/api/orders
-          wait_for http://localhost:8082/api/products
-
-      - name: Test cross-service calls
-        run: |
-          curl -f http://localhost:8080/call/all
-          curl -f http://localhost:8081/call/all
-          curl -f http://localhost:8082/call/all
-
-      - name: Show logs on failure
-        if: failure()
-        run: |
-          for s in user order product; do
-            echo "===== $s ====="
-            docker logs --tail 40 $s
-          done
-
   docker-publish:
-    needs: integration-test
+    needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:

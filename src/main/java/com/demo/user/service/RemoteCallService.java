@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashMap;
@@ -31,22 +32,30 @@ public class RemoteCallService {
 
     // ---- calls order-service (port 8081) ----
     public List<OrderDto> getAllOrders() {
-        return rest.exchange(orderUrl + "/api/orders", HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<OrderDto>>() {}).getBody();
+        return requireBody(rest.exchange(orderUrl + "/api/orders", HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<OrderDto>>() {}).getBody(), "/api/orders");
     }
 
     public OrderDto getOrderById(Long id) {
-        return rest.getForObject(orderUrl + "/api/orders/" + id, OrderDto.class);
+        return requireBody(rest.getForObject(orderUrl + "/api/orders/" + id, OrderDto.class), "/api/orders/" + id);
     }
 
     // ---- calls product-service (port 8082) ----
     public List<ProductDto> getAllProducts() {
-        return rest.exchange(productUrl + "/api/products", HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<ProductDto>>() {}).getBody();
+        return requireBody(rest.exchange(productUrl + "/api/products", HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<ProductDto>>() {}).getBody(), "/api/products");
     }
 
     public ProductDto getProductById(Long id) {
-        return rest.getForObject(productUrl + "/api/products/" + id, ProductDto.class);
+        return requireBody(rest.getForObject(productUrl + "/api/products/" + id, ProductDto.class), "/api/products/" + id);
+    }
+
+    // An empty or "null" response body is also a broken contract
+    private static <T> T requireBody(T body, String path) {
+        if (body == null) {
+            throw new RestClientException("Empty response body from " + path);
+        }
+        return body;
     }
 
     // ---- calls every endpoint of both other services ----
