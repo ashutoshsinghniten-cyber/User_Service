@@ -11,8 +11,8 @@ import java.util.Optional;
 public class UserRepository {
 
     private final List<UserDto> data = List.of(
-            new UserDto(1L, 5, "amit@example.com"),
-            new UserDto(2L, 6, "priya@example.com"));
+            new UserDto(1L, "Amit", "amit@example.com"),
+            new UserDto(2L, "Priya", "priya@example.com"));
 
     public List<UserDto> findAll() {
         return data;
