@@ -1,5 +1,6 @@
 package com.demo.user.repository;
 
+import com.demo.user.model.AddressDto;
 import com.demo.user.model.UserDto;
 import org.springframework.stereotype.Repository;
 
@@ -11,8 +12,8 @@ import java.util.Optional;
 public class UserRepository {
 
     private final List<UserDto> data = List.of(
-            new UserDto(1L, "Amit", "amit@example.com"),
-            new UserDto(2L, "Priya", "priya@example.com"));
+            new UserDto(1L, "Amit",  "amit@example.com",  new AddressDto("12 MG Road",    "Mumbai", "Maharashtra", "400001")),
+            new UserDto(2L, "Priya", "priya@example.com", new AddressDto("45 Park Street", "Delhi",  "Delhi",       "110001")));
 
     public List<UserDto> findAll() {
         return data;
